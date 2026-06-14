@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Urgency {
+  low
+  moderate
+  high
+}
+
+enum Status {
+  not_started
+  in_progress
+  done
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  todos Todo[]
+
+  @@map("users")
+}
+
+model Todo {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  description String
+  date        DateTime @db.Date
+  color       String
+  urgency     Urgency  @default(low)
+  status      Status   @default(not_started)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("todos")
+  @@index([userId, date])
+}
