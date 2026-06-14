@@ -19,24 +19,25 @@ export const colors = {
   success: '#7CB342', // done green
   successLight: '#E3F1D4',
   border: '#F0E0CC',
+  danger: '#E25C4A',
 
   // Urgency colors
   urgencyHigh: '#E25C4A',
   urgencyModerate: '#F5A623',
   urgencyLow: '#7CB342',
 
-  // Random "awesome colours" palette for todos
+  // "Awesome colours" palette for todos - vivid but balanced
   todoPalette: [
     '#FF8C42', // sunset orange
     '#F5A623', // sun gold
     '#E25C4A', // coral red
-    '#FF6B9D', // pink
-    '#C06EFF', // violet
+    '#EC6FA3', // pink
+    '#9B7EDE', // violet
     '#5E60CE', // indigo
     '#4EA8DE', // sky blue
-    '#48C9B0', // teal
+    '#3FB8AF', // teal
     '#7CB342', // leaf green
-    '#FFD23F', // sunflower yellow
+    '#F2C14E', // sunflower yellow
   ],
 };
 
@@ -50,21 +51,21 @@ export const spacing = {
 };
 
 export const radii = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 24,
+  sm: 6,
+  md: 10,
+  lg: 14,
+  xl: 20,
   pill: 999,
 };
 
 export const typography = {
-  h1: { fontSize: 28, fontWeight: '800' as const },
-  h2: { fontSize: 22, fontWeight: '700' as const },
-  h3: { fontSize: 18, fontWeight: '700' as const },
-  body: { fontSize: 16, fontWeight: '400' as const },
-  bodyBold: { fontSize: 16, fontWeight: '600' as const },
+  h1: { fontSize: 28, fontWeight: '700' as const, letterSpacing: -0.5 },
+  h2: { fontSize: 21, fontWeight: '700' as const, letterSpacing: -0.3 },
+  h3: { fontSize: 17, fontWeight: '600' as const },
+  body: { fontSize: 15, fontWeight: '400' as const },
+  bodyBold: { fontSize: 15, fontWeight: '600' as const },
   caption: { fontSize: 13, fontWeight: '400' as const },
-  button: { fontSize: 16, fontWeight: '700' as const },
+  button: { fontSize: 15, fontWeight: '600' as const, letterSpacing: 0.2 },
 };
 
 export const urgencyColor = (urgency: 'low' | 'moderate' | 'high') => {

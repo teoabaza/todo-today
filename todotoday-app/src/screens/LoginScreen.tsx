@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
@@ -41,52 +42,54 @@ export const LoginScreen = ({ navigation }: any) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Image
-          source={require('../../assets/icon.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>
-          Todo<Text style={{ color: colors.primary }}>Today</Text>
-        </Text>
-        <Text style={styles.subtitle}>Welcome back! Log in to keep on top of your day.</Text>
-
-        <View style={styles.form}>
-          <Input
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            placeholder="you@example.com"
-            autoCapitalize="none"
-            keyboardType="email-address"
+    <SafeAreaView style={styles.flex} edges={['top', 'bottom']}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <Image
+            source={require('../../assets/icon.png')}
+            style={styles.logo}
+            resizeMode="contain"
           />
-          <Input
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            placeholder="••••••••"
-            secureTextEntry
-          />
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <Text style={styles.title}>
+            Todo<Text style={{ color: colors.primary }}>Today</Text>
+          </Text>
+          <Text style={styles.subtitle}>Welcome back! Log in to keep on top of your day.</Text>
 
-          <Button title="Log In" onPress={handleLogin} loading={loading} />
+          <View style={styles.form}>
+            <Input
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="you@example.com"
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <Input
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              placeholder="••••••••"
+              secureTextEntry
+            />
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-          <TouchableOpacity
-            style={styles.linkContainer}
-            onPress={() => navigation.navigate('Register')}
-          >
-            <Text style={styles.linkText}>
-              Don't have an account? <Text style={styles.linkHighlight}>Sign up</Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <Button title="Log In" onPress={handleLogin} loading={loading} />
+
+            <TouchableOpacity
+              style={styles.linkContainer}
+              onPress={() => navigation.navigate('Register')}
+            >
+              <Text style={styles.linkText}>
+                Don't have an account? <Text style={styles.linkHighlight}>Sign up</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

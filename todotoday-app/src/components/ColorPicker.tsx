@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { Check } from 'lucide-react-native';
 import { colors, spacing, typography } from '../theme/theme';
 
 interface ColorPickerProps {
@@ -25,7 +26,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange }) => 
               onPress={() => onChange(c)}
               activeOpacity={0.8}
             >
-              {selected && <Text style={styles.check}>✓</Text>}
+              {selected && <Check size={18} color="#fff" strokeWidth={3} />}
             </TouchableOpacity>
           );
         })}
@@ -57,10 +58,5 @@ const styles = StyleSheet.create({
   },
   selected: {
     borderColor: colors.text,
-  },
-  check: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 16,
   },
 });

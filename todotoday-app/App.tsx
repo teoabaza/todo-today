@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { AuthNavigator } from './src/navigation/AuthNavigator';
 import { MainNavigator } from './src/navigation/MainNavigator';
@@ -23,12 +24,14 @@ const RootNavigator = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <StatusBar style="dark" />
-        <RootNavigator />
-      </NavigationContainer>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <StatusBar style="dark" />
+          <RootNavigator />
+        </NavigationContainer>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
 

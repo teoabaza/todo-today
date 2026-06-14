@@ -1,18 +1,15 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Home, Calendar as CalendarIcon } from 'lucide-react-native';
 import { HomeScreen } from '../screens/HomeScreen';
 import { CalendarScreen } from '../screens/CalendarScreen';
 import { AddTodoScreen } from '../screens/AddTodoScreen';
+import { ProfileScreen } from '../screens/ProfileScreen';
 import { colors } from '../theme/theme';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-
-const TabIcon = ({ emoji, focused }: { emoji: string; focused: boolean }) => (
-  <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>
-);
 
 const MainTabs = () => {
   return (
@@ -38,14 +35,14 @@ const MainTabs = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} />,
+          tabBarIcon: ({ color, size }) => <Home size={size} color={color} strokeWidth={2} />,
         }}
       />
       <Tab.Screen
         name="Calendar"
         component={CalendarScreen}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="📅" focused={focused} />,
+          tabBarIcon: ({ color, size }) => <CalendarIcon size={size} color={color} strokeWidth={2} />,
         }}
       />
     </Tab.Navigator>
@@ -59,6 +56,15 @@ export const MainNavigator = () => {
       <Stack.Screen
         name="AddTodo"
         component={AddTodoScreen}
+        options={{
+          presentation: 'modal',
+          title: '',
+          headerStyle: { backgroundColor: colors.background },
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
         options={{
           presentation: 'modal',
           title: '',

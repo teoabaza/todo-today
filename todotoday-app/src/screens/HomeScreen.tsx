@@ -8,7 +8,9 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { Plus, UserCircle, ClipboardList } from 'lucide-react-native';
 import { colors, spacing, typography, radii } from '../theme/theme';
 import { TodoItem } from '../components/TodoItem';
 import { getTodosByDate, updateTodo, Todo } from '../api/todos';
@@ -17,7 +19,7 @@ import { useAuth } from '../context/AuthContext';
 import { ApiError } from '../api/client';
 
 export const HomeScreen = ({ navigation }: any) => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -67,16 +69,20 @@ export const HomeScreen = ({ navigation }: any) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>
-            Hi{user?.name ? `, ${user.name}` : ''} 👋
+            Hi{user?.name ? `, ${user.name}` : ''}
           </Text>
           <Text style={styles.date}>{formatFriendlyDate(today)}</Text>
         </View>
-        <TouchableOpacity onPress={logout}>
-          <Text style={styles.logout}>Log out</Text>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => navigation.navigate('Profile')}
+          activeOpacity={0.7}
+        >
+          <UserCircle size={28} color={colors.secondary} strokeWidth={1.75} />
         </TouchableOpacity>
       </View>
 
@@ -86,13 +92,14 @@ export const HomeScreen = ({ navigation }: any) => {
         contentContainerStyle={styles.list}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         renderItem={({ item }) => (
-          <TodoItem todo={item} onToggleDone={handleToggleDone} />
+          <TodoItem todo={item} onToggleDone={handleToggleDone} onPress={(t) => navigation.navigate('AddTodo', { todoId: t.id })} />
         )}
         ListEmptyComponent={
           !loading ? (
             <View style={styles.empty}>
-              <Text style={styles.emptyText}>Nothing on your list for today yet.</Text>
-              <Text style={styles.emptySubtext}>Tap the + button to add your first todo!</Text>
+              <ClipboardList size={40} color={colors.textMuted} strokeWidth={1.5} />
+              <Text style={styles.emptyText}>Nothing on your list for today yet</Text>
+              <Text style={styles.emptySubtext}>Tap the button below to add your first todo</Text>
             </View>
           ) : null
         }
@@ -103,9 +110,9 @@ export const HomeScreen = ({ navigation }: any) => {
         onPress={() => navigation.navigate('AddTodo', { date: today })}
         activeOpacity={0.85}
       >
-        <Text style={styles.fabIcon}>+</Text>
+        <Plus size={26} color="#fff" strokeWidth={2.5} />
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -117,7 +124,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
     paddingBottom: spacing.md,
@@ -131,11 +138,11 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.xs,
   },
-  logout: {
-    ...typography.bodyBold,
-    color: colors.primary,
-    fontSize: 14,
-    marginTop: spacing.xs,
+  profileButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   list: {
     paddingHorizontal: spacing.lg,
@@ -150,33 +157,28 @@ const styles = StyleSheet.create({
     ...typography.h3,
     color: colors.text,
     textAlign: 'center',
+    marginTop: spacing.md,
   },
   emptySubtext: {
     ...typography.body,
     color: colors.textMuted,
     textAlign: 'center',
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
   fab: {
     position: 'absolute',
     bottom: spacing.xl,
     right: spacing.lg,
-    width: 60,
-    height: 60,
+    width: 56,
+    height: 56,
     borderRadius: radii.pill,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
     elevation: 5,
-  },
-  fabIcon: {
-    color: '#fff',
-    fontSize: 32,
-    fontWeight: '700',
-    marginTop: -2,
   },
 });

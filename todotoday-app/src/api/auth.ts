@@ -3,7 +3,7 @@ import { apiRequest } from './client';
 export interface User {
   id: string;
   email: string;
-  name?: string | null;
+  name: string;
 }
 
 export interface AuthResponse {
@@ -11,7 +11,7 @@ export interface AuthResponse {
   user: User;
 }
 
-export const register = (email: string, password: string, name?: string) => {
+export const register = (email: string, password: string, name: string) => {
   return apiRequest<AuthResponse>('/auth/register', {
     method: 'POST',
     body: { email, password, name },
@@ -29,4 +29,11 @@ export const login = (email: string, password: string) => {
 
 export const getMe = () => {
   return apiRequest<{ user: User }>('/auth/me');
+};
+
+export const updateMe = (name: string) => {
+  return apiRequest<{ user: User }>('/auth/me', {
+    method: 'PATCH',
+    body: { name },
+  });
 };

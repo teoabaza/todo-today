@@ -7,7 +7,11 @@ import { signToken } from '../utils/jwt';
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  name: z.string().min(1).optional(),
+  name: z.string().min(1, 'Name is required'),
+});
+
+const updateMeSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
 });
 
 const loginSchema = z.object({
@@ -71,6 +75,22 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
     const userId = (req as any).user.userId;
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(404).json({ error: 'User not found' });
+
+    return res.json({ user: { id: user.id, email: user.email, name: user.name } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateMe = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = (req as any).user.userId;
+    const { name } = updateMeSchema.parse(req.body);
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { name },
+    });
 
     return res.json({ user: { id: user.id, email: user.email, name: user.name } });
   } catch (err) {

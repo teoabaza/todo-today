@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Check, ChevronRight } from 'lucide-react-native';
 import { colors, radii, spacing, typography, urgencyColor } from '../theme/theme';
 import { Todo } from '../api/todos';
 
@@ -42,7 +43,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggleDone, onPress 
         onPress={() => onToggleDone(todo)}
         activeOpacity={0.7}
       >
-        {isDone && <Text style={styles.checkmark}>✓</Text>}
+        {isDone && <Check size={16} color="#fff" strokeWidth={3} />}
       </TouchableOpacity>
 
       <View style={styles.content}>
@@ -60,6 +61,8 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggleDone, onPress 
           </Text>
         </View>
       </View>
+
+      {onPress && <ChevronRight size={20} color={colors.border} strokeWidth={2} />}
     </TouchableOpacity>
   );
 };
@@ -93,11 +96,6 @@ const styles = StyleSheet.create({
   },
   checkboxDone: {
     backgroundColor: colors.success,
-  },
-  checkmark: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 16,
   },
   content: {
     flex: 1,

@@ -8,6 +8,8 @@ import {
   Modal,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { X, Plus } from 'lucide-react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { useFocusEffect } from '@react-navigation/native';
 import { colors, spacing, typography, radii } from '../theme/theme';
@@ -95,7 +97,7 @@ export const CalendarScreen = ({ navigation }: any) => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <Text style={styles.title}>Calendar</Text>
 
       <Calendar
@@ -135,8 +137,8 @@ export const CalendarScreen = ({ navigation }: any) => {
               <Text style={styles.modalTitle}>
                 {selectedDate ? formatFriendlyDate(selectedDate) : ''}
               </Text>
-              <TouchableOpacity onPress={() => setSelectedDate(null)}>
-                <Text style={styles.closeButton}>✕</Text>
+              <TouchableOpacity onPress={() => setSelectedDate(null)} style={styles.closeButton}>
+                <X size={22} color={colors.textMuted} strokeWidth={2} />
               </TouchableOpacity>
             </View>
 
@@ -145,7 +147,14 @@ export const CalendarScreen = ({ navigation }: any) => {
               keyExtractor={(item) => item.id}
               contentContainerStyle={styles.modalList}
               renderItem={({ item }) => (
-                <TodoItem todo={item} onToggleDone={handleToggleDone} />
+                <TodoItem
+                  todo={item}
+                  onToggleDone={handleToggleDone}
+                  onPress={(t) => {
+                    setSelectedDate(null);
+                    navigation.navigate('AddTodo', { todoId: t.id });
+                  }}
+                />
               )}
               ListEmptyComponent={
                 !loadingDay ? (
@@ -161,13 +170,15 @@ export const CalendarScreen = ({ navigation }: any) => {
                 setSelectedDate(null);
                 navigation.navigate('AddTodo', { date });
               }}
+              activeOpacity={0.85}
             >
-              <Text style={styles.addButtonText}>+ Add Todo for this Day</Text>
+              <Plus size={18} color="#fff" strokeWidth={2.5} />
+              <Text style={styles.addButtonText}>Add Todo for this Day</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -218,8 +229,6 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   closeButton: {
-    fontSize: 20,
-    color: colors.textMuted,
     padding: spacing.xs,
   },
   modalList: {
@@ -233,10 +242,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   addButton: {
+    flexDirection: 'row',
     backgroundColor: colors.primary,
     borderRadius: radii.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
   },
   addButtonText: {
     ...typography.button,

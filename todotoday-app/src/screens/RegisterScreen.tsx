@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
@@ -27,6 +28,10 @@ export const RegisterScreen = ({ navigation }: any) => {
 
   const handleRegister = async () => {
     setError('');
+    if (!name.trim()) {
+      setError('Please enter your name');
+      return;
+    }
     if (!email || !password) {
       setError('Please enter your email and password');
       return;
@@ -41,7 +46,7 @@ export const RegisterScreen = ({ navigation }: any) => {
     }
     setLoading(true);
     try {
-      await register(email.trim(), password, name.trim() || undefined);
+      await register(email.trim(), password, name.trim());
     } catch (err) {
       const message = err instanceof ApiError ? err.message : 'Something went wrong';
       Alert.alert('Registration failed', message);
@@ -51,60 +56,62 @@ export const RegisterScreen = ({ navigation }: any) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Image
-          source={require('../../assets/icon.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>
-          Create your <Text style={{ color: colors.primary }}>TodoToday</Text> account
-        </Text>
-        <Text style={styles.subtitle}>Start planning your days, beautifully.</Text>
-
-        <View style={styles.form}>
-          <Input label="Name (optional)" value={name} onChangeText={setName} placeholder="Jane Doe" />
-          <Input
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            placeholder="you@example.com"
-            autoCapitalize="none"
-            keyboardType="email-address"
+    <SafeAreaView style={styles.flex} edges={['top', 'bottom']}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <Image
+            source={require('../../assets/icon.png')}
+            style={styles.logo}
+            resizeMode="contain"
           />
-          <Input
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            placeholder="At least 6 characters"
-            secureTextEntry
-          />
-          <Input
-            label="Confirm Password"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            placeholder="••••••••"
-            secureTextEntry
-          />
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <Text style={styles.title}>
+            Create your <Text style={{ color: colors.primary }}>TodoToday</Text> account
+          </Text>
+          <Text style={styles.subtitle}>Start planning your days, beautifully.</Text>
 
-          <Button title="Sign Up" onPress={handleRegister} loading={loading} />
+          <View style={styles.form}>
+            <Input label="Name" value={name} onChangeText={setName} placeholder="Jane Doe" />
+            <Input
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="you@example.com"
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <Input
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              placeholder="At least 6 characters"
+              secureTextEntry
+            />
+            <Input
+              label="Confirm Password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="••••••••"
+              secureTextEntry
+            />
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-          <TouchableOpacity
-            style={styles.linkContainer}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={styles.linkText}>
-              Already have an account? <Text style={styles.linkHighlight}>Log in</Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <Button title="Sign Up" onPress={handleRegister} loading={loading} />
+
+            <TouchableOpacity
+              style={styles.linkContainer}
+              onPress={() => navigation.navigate('Login')}
+            >
+              <Text style={styles.linkText}>
+                Already have an account? <Text style={styles.linkHighlight}>Log in</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
