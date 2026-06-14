@@ -63,7 +63,7 @@ export const RegisterScreen = ({ navigation }: any) => {
       >
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <Image
-            source={require('../../assets/icon.png')}
+            source={require('../../assets/icon-transparent.png')}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -123,10 +123,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 95,
+    height: 95,
     alignSelf: 'center',
-    marginBottom: spacing.md,
+    marginBottom: -8,
   },
   title: {
     ...typography.h1,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.sm,
-    marginBottom: spacing.xl,
+    fontSize: 14
   },
   form: {
     marginTop: spacing.md,

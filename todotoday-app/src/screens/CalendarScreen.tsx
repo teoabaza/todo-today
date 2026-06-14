@@ -8,7 +8,7 @@ import {
   Modal,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X, Plus } from 'lucide-react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { useFocusEffect } from '@react-navigation/native';
@@ -19,6 +19,7 @@ import { getTodayString, formatFriendlyDate, toDateString } from '../utils/date'
 import { ApiError } from '../api/client';
 
 export const CalendarScreen = ({ navigation }: any) => {
+  const insets = useSafeAreaInsets();
   const today = getTodayString();
   const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date();
@@ -132,7 +133,7 @@ export const CalendarScreen = ({ navigation }: any) => {
         onRequestClose={() => setSelectedDate(null)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { paddingBottom: spacing.xl + insets.bottom }]}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
                 {selectedDate ? formatFriendlyDate(selectedDate) : ''}

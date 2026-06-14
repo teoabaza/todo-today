@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { Plus, UserCircle, ClipboardList } from 'lucide-react-native';
+import { Plus, ClipboardList } from 'lucide-react-native';
 import { colors, spacing, typography, radii } from '../theme/theme';
 import { TodoItem } from '../components/TodoItem';
 import { getTodosByDate, updateTodo, Todo } from '../api/todos';
@@ -77,13 +78,11 @@ export const HomeScreen = ({ navigation }: any) => {
           </Text>
           <Text style={styles.date}>{formatFriendlyDate(today)}</Text>
         </View>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() => navigation.navigate('Profile')}
-          activeOpacity={0.7}
-        >
-          <UserCircle size={28} color={colors.secondary} strokeWidth={1.75} />
-        </TouchableOpacity>
+        <Image
+          source={require('../../assets/icon-transparent.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
       </View>
 
       <FlatList
@@ -129,6 +128,10 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
     paddingBottom: spacing.md,
   },
+  logo: {
+    width: 60,
+    height: 60,
+  },
   greeting: {
     ...typography.h2,
     color: colors.text,
@@ -137,12 +140,6 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.textMuted,
     marginTop: spacing.xs,
-  },
-  profileButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   list: {
     paddingHorizontal: spacing.lg,

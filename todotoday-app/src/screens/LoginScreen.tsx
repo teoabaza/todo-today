@@ -49,7 +49,7 @@ export const LoginScreen = ({ navigation }: any) => {
       >
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <Image
-            source={require('../../assets/icon.png')}
+            source={require('../../assets/icon-transparent.png')}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -101,10 +101,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 96,
-    height: 96,
+    width: 100,
+    height: 100,
     alignSelf: 'center',
-    marginBottom: spacing.md,
+    marginBottom: -10,
   },
   title: {
     ...typography.h1,

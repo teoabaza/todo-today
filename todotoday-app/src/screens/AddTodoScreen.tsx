@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Trash2 } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
@@ -138,82 +139,84 @@ export const AddTodoScreen = ({ navigation, route }: any) => {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.titleRow}>
-        <Text style={styles.title}>{isEditMode ? 'Edit Todo' : 'New Todo'}</Text>
-        {isEditMode && (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={handleDelete}
-            disabled={deleting}
-            activeOpacity={0.7}
-          >
-            {deleting ? (
-              <ActivityIndicator size="small" color={colors.danger} />
-            ) : (
-              <Trash2 size={20} color={colors.danger} strokeWidth={2} />
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{isEditMode ? 'Edit Todo' : 'New Todo'}</Text>
+          {isEditMode && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={handleDelete}
+              disabled={deleting}
+              activeOpacity={0.7}
+            >
+              {deleting ? (
+                <ActivityIndicator size="small" color={colors.danger} />
+              ) : (
+                <Trash2 size={20} color={colors.danger} strokeWidth={2} />
+              )}
+            </TouchableOpacity>
+          )}
+        </View>
 
-      <Input
-        label="Description"
-        value={description}
-        onChangeText={setDescription}
-        placeholder="What do you need to do?"
-        multiline
-        numberOfLines={3}
-        style={styles.textArea}
-        error={error || undefined}
-      />
-
-      <Text style={styles.label}>Date</Text>
-      <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
-        <Text style={styles.dateText}>{formatShortDate(date)}</Text>
-        <Text style={styles.dateChange}>Change</Text>
-      </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          value={parsedDate}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          onChange={onDateChange}
+        <Input
+          label="Description"
+          value={description}
+          onChangeText={setDescription}
+          placeholder="What do you need to do?"
+          multiline
+          numberOfLines={3}
+          style={styles.textArea}
+          error={error || undefined}
         />
-      )}
 
-      <ColorPicker value={color} onChange={setColor} />
+        <Text style={styles.label}>Date</Text>
+        <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
+          <Text style={styles.dateText}>{formatShortDate(date)}</Text>
+          <Text style={styles.dateChange}>Change</Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            value={parsedDate}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'inline' : 'default'}
+            onChange={onDateChange}
+          />
+        )}
 
-      <SegmentedControl<Urgency>
-        label="Urgency"
-        value={urgency}
-        onChange={setUrgency}
-        options={[
-          { label: 'Low', value: 'low', color: urgencyColor('low') },
-          { label: 'Moderate', value: 'moderate', color: urgencyColor('moderate') },
-          { label: 'High', value: 'high', color: urgencyColor('high') },
-        ]}
-      />
+        <ColorPicker value={color} onChange={setColor} />
 
-      <SegmentedControl<Status>
-        label="Status"
-        value={status}
-        onChange={setStatus}
-        options={[
-          { label: 'Not Started', value: 'not_started' },
-          { label: 'In Progress', value: 'in_progress' },
-          { label: 'Done', value: 'done', color: colors.success },
-        ]}
-      />
+        <SegmentedControl<Urgency>
+          label="Urgency"
+          value={urgency}
+          onChange={setUrgency}
+          options={[
+            { label: 'Low', value: 'low', color: urgencyColor('low') },
+            { label: 'Moderate', value: 'moderate', color: urgencyColor('moderate') },
+            { label: 'High', value: 'high', color: urgencyColor('high') },
+          ]}
+        />
 
-      <Button
-        title={isEditMode ? 'Save Changes' : 'Add Todo'}
-        onPress={handleSave}
-        loading={loading}
-        style={{ marginTop: spacing.sm }}
-      />
-      <Button title="Cancel" onPress={() => navigation.goBack()} variant="outline" style={{ marginTop: spacing.sm }} />
-    </ScrollView>
+        <SegmentedControl<Status>
+          label="Status"
+          value={status}
+          onChange={setStatus}
+          options={[
+            { label: 'Not Started', value: 'not_started' },
+            { label: 'In Progress', value: 'in_progress' },
+            { label: 'Done', value: 'done', color: colors.success },
+          ]}
+        />
+
+        <Button
+          title={isEditMode ? 'Save Changes' : 'Add Todo'}
+          onPress={handleSave}
+          loading={loading}
+          style={{ marginTop: spacing.sm }}
+        />
+        <Button title="Cancel" onPress={() => navigation.goBack()} variant="outline" style={{ marginTop: spacing.sm }} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

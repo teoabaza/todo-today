@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDF1E3"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.todotoday.app"
@@ -28,7 +30,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "REPLACE_WITH_YOUR_EAS_PROJECT_ID"
+        "projectId": "b581e0c4-5b46-469d-90ea-821e88fd7251"
       }
     }
   }

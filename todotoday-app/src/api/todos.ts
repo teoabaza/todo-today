@@ -24,6 +24,10 @@ export interface CreateTodoInput {
 
 export type UpdateTodoInput = Partial<CreateTodoInput>;
 
+export const getTodoById = (id: string) => {
+  return apiRequest<{ todo: Todo }>(`/todos/${id}`);
+};
+
 export const getTodosByDate = (date: string) => {
   return apiRequest<{ todos: Todo[] }>(`/todos?date=${date}`);
 };
