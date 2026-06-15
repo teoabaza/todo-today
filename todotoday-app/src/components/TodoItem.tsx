@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Check, ChevronRight } from 'lucide-react-native';
+import { Check, ChevronRight, CalendarPlus } from 'lucide-react-native';
 import { colors, radii, spacing, typography, urgencyColor } from '../theme/theme';
 import { Todo } from '../api/todos';
 
@@ -8,6 +8,7 @@ interface TodoItemProps {
   todo: Todo;
   onToggleDone: (todo: Todo) => void;
   onPress?: (todo: Todo) => void;
+  onQuickAddToday?: (todo: Todo) => void;
 }
 
 const statusLabel = (status: Todo['status']) => {
@@ -21,7 +22,7 @@ const statusLabel = (status: Todo['status']) => {
   }
 };
 
-export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggleDone, onPress }) => {
+export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggleDone, onPress, onQuickAddToday }) => {
   const isDone = todo.status === 'done';
 
   return (
@@ -62,7 +63,17 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggleDone, onPress 
         </View>
       </View>
 
-      {onPress && <ChevronRight size={20} color={colors.border} strokeWidth={2} />}
+      {onQuickAddToday && (
+        <TouchableOpacity
+          style={styles.quickAction}
+          onPress={() => onQuickAddToday(todo)}
+          activeOpacity={0.7}
+        >
+          <CalendarPlus size={20} color={colors.primary} strokeWidth={2} />
+        </TouchableOpacity>
+      )}
+
+      {onPress && !onQuickAddToday && <ChevronRight size={20} color={colors.border} strokeWidth={2} />}
     </TouchableOpacity>
   );
 };
@@ -122,5 +133,9 @@ const styles = StyleSheet.create({
   metaText: {
     ...typography.caption,
     color: colors.textMuted,
+  },
+  quickAction: {
+    padding: spacing.xs,
+    marginLeft: spacing.xs,
   },
 });

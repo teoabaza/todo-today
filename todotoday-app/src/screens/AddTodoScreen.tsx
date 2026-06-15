@@ -24,10 +24,14 @@ import { ApiError } from '../api/client';
 export const AddTodoScreen = ({ navigation, route }: any) => {
   const todoId: string | undefined = route?.params?.todoId;
   const isEditMode = !!todoId;
-  const initialDate: string = route?.params?.date || toDateString(new Date());
+  // route.params.date can be: undefined (default to today), a YYYY-MM-DD string, or null (Someday/backlog)
+  const hasDateParam = route?.params && 'date' in route.params;
+  const initialDate: string | null = hasDateParam
+    ? route.params.date
+    : toDateString(new Date());
 
   const [description, setDescription] = useState('');
-  const [date, setDate] = useState(initialDate);
+  const [date, setDate] = useState<string | null>(initialDate);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [color, setColor] = useState(getRandomTodoColor());
   const [urgency, setUrgency] = useState<Urgency>('low');
@@ -59,7 +63,8 @@ export const AddTodoScreen = ({ navigation, route }: any) => {
   }, [todoId]);
 
   const parsedDate = (() => {
-    const [y, m, d] = date.split('-').map(Number);
+    const dateForPicker = date || toDateString(new Date());
+    const [y, m, d] = dateForPicker.split('-').map(Number);
     return new Date(y, m - 1, d);
   })();
 
@@ -171,10 +176,36 @@ export const AddTodoScreen = ({ navigation, route }: any) => {
         />
 
         <Text style={styles.label}>Date</Text>
-        <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
-          <Text style={styles.dateText}>{formatShortDate(date)}</Text>
-          <Text style={styles.dateChange}>Change</Text>
-        </TouchableOpacity>
+        {date ? (
+          <View style={styles.dateRow}>
+            <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
+              <Text style={styles.dateText}>{formatShortDate(date)}</Text>
+              <Text style={styles.dateChange}>Change</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.somedayLink}
+              onPress={() => setDate(null)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.somedayLinkText}>Move to Someday (no date)</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.dateRow}>
+            <View style={styles.somedayBanner}>
+              <Text style={styles.somedayBannerText}>No date — in your Someday list</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => {
+                setDate(toDateString(new Date()));
+                setShowDatePicker(true);
+              }}
+            >
+              <Text style={styles.dateChange}>Set a date</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {showDatePicker && (
           <DateTimePicker
             value={parsedDate}
@@ -262,6 +293,9 @@ const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: 'top',
   },
+  dateRow: {
+    marginBottom: spacing.md,
+  },
   dateButton: {
     backgroundColor: colors.surface,
     borderRadius: radii.md,
@@ -269,7 +303,6 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 4,
-    marginBottom: spacing.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -282,5 +315,28 @@ const styles = StyleSheet.create({
     ...typography.bodyBold,
     color: colors.primary,
     fontSize: 14,
+  },
+  somedayLink: {
+    marginTop: spacing.sm,
+    alignSelf: 'flex-start',
+  },
+  somedayLinkText: {
+    ...typography.caption,
+    color: colors.textMuted,
+    textDecorationLine: 'underline',
+  },
+  somedayBanner: {
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: radii.md,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    borderStyle: 'dashed',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm + 4,
+    marginBottom: spacing.sm,
+  },
+  somedayBannerText: {
+    ...typography.body,
+    color: colors.textMuted,
   },
 });

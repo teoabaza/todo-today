@@ -6,7 +6,7 @@ export type Status = 'not_started' | 'in_progress' | 'done';
 export interface Todo {
   id: string;
   description: string;
-  date: string; // YYYY-MM-DD
+  date: string | null; // YYYY-MM-DD or null for backlog ("Someday") todos
   color: string;
   urgency: Urgency;
   status: Status;
@@ -16,7 +16,7 @@ export interface Todo {
 
 export interface CreateTodoInput {
   description: string;
-  date: string; // YYYY-MM-DD
+  date?: string | null; // YYYY-MM-DD, or null/omitted for backlog
   color?: string;
   urgency?: Urgency;
   status?: Status;
@@ -34,6 +34,10 @@ export const getTodosByDate = (date: string) => {
 
 export const getTodosInRange = (from: string, to: string) => {
   return apiRequest<{ todos: Todo[] }>(`/todos?from=${from}&to=${to}`);
+};
+
+export const getBacklogTodos = () => {
+  return apiRequest<{ todos: Todo[] }>('/todos?backlog=true');
 };
 
 export const createTodo = (input: CreateTodoInput) => {

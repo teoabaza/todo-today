@@ -2,9 +2,10 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Home, Calendar as CalendarIcon, User } from 'lucide-react-native';
+import { Home, Calendar as CalendarIcon, User, Inbox } from 'lucide-react-native';
 import { HomeScreen } from '../screens/HomeScreen';
 import { CalendarScreen } from '../screens/CalendarScreen';
+import { BacklogScreen } from '../screens/BacklogScreen';
 import { AddTodoScreen } from '../screens/AddTodoScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { colors } from '../theme/theme';
@@ -43,6 +44,13 @@ const MainTabs = () => {
         component={CalendarScreen}
         options={{
           tabBarIcon: ({ color }) => <CalendarIcon size={26} color={color} strokeWidth={2} />,
+        }}
+      />
+      <Tab.Screen
+        name="Backlog"
+        component={BacklogScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Inbox size={26} color={color} strokeWidth={2} />,
         }}
       />
       <Tab.Screen

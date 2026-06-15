@@ -14,7 +14,7 @@ const hexColorSchema = z
 
 const createTodoSchema = z.object({
   description: z.string().min(1, 'Description is required'),
-  date: dateStringSchema,
+  date: dateStringSchema.nullable().optional(),
   color: hexColorSchema.optional(),
   urgency: z.enum(['low', 'moderate', 'high']).optional().default('low'),
   status: z.enum(['not_started', 'in_progress', 'done']).optional().default('not_started'),
@@ -22,7 +22,7 @@ const createTodoSchema = z.object({
 
 const updateTodoSchema = z.object({
   description: z.string().min(1).optional(),
-  date: dateStringSchema.optional(),
+  date: dateStringSchema.nullable().optional(),
   color: hexColorSchema.optional(),
   urgency: z.enum(['low', 'moderate', 'high']).optional(),
   status: z.enum(['not_started', 'in_progress', 'done']).optional(),
@@ -35,7 +35,8 @@ const toUtcDate = (dateStr: string): Date => {
 };
 
 // Helper to format a Date as YYYY-MM-DD for API responses.
-const formatDate = (date: Date): string => {
+const formatDate = (date: Date | null): string | null => {
+  if (!date) return null;
   return date.toISOString().split('T')[0];
 };
 
@@ -52,15 +53,18 @@ const serializeTodo = (todo: any) => ({
 
 // GET /todos?date=YYYY-MM-DD  -> todos for a specific date
 // GET /todos?from=YYYY-MM-DD&to=YYYY-MM-DD -> todos in a date range (for calendar dots)
+// GET /todos?backlog=true -> todos with no date set (the "someday" pool)
 // GET /todos -> all todos for the user
 export const getTodos = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.userId;
-    const { date, from, to } = req.query;
+    const { date, from, to, backlog } = req.query;
 
     const where: any = { userId };
 
-    if (date && typeof date === 'string') {
+    if (backlog === 'true') {
+      where.date = null;
+    } else if (date && typeof date === 'string') {
       const parsed = dateStringSchema.safeParse(date);
       if (!parsed.success) {
         return res.status(400).json({ error: 'Invalid date format, expected YYYY-MM-DD' });
@@ -111,7 +115,7 @@ export const createTodo = async (req: AuthRequest, res: Response, next: NextFunc
       data: {
         userId,
         description: data.description,
-        date: toUtcDate(data.date),
+        date: data.date ? toUtcDate(data.date) : null,
         color: data.color || getRandomTodoColor(),
         urgency: data.urgency,
         status: data.status,
@@ -135,7 +139,9 @@ export const updateTodo = async (req: AuthRequest, res: Response, next: NextFunc
     if (!existing) return res.status(404).json({ error: 'Todo not found' });
 
     const updateData: any = { ...data };
-    if (data.date) updateData.date = toUtcDate(data.date);
+    if (data.date !== undefined) {
+      updateData.date = data.date ? toUtcDate(data.date) : null;
+    }
 
     const todo = await prisma.todo.update({
       where: { id },

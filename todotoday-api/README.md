@@ -23,22 +23,25 @@ API runs on `http://localhost:4000` by default.
 ## Endpoints
 
 ### Auth
-- `POST /auth/register` — `{ email, password, name? }` → `{ token, user }`
+- `POST /auth/register` — `{ email, password, name }` → `{ token, user }`
 - `POST /auth/login` — `{ email, password }` → `{ token, user }`
 - `GET /auth/me` — requires `Authorization: Bearer <token>` → `{ user }`
+- `PATCH /auth/me` — `{ name }` → `{ user }`
 
 ### Todos (all require `Authorization: Bearer <token>`)
 - `GET /todos?date=YYYY-MM-DD` — todos for a specific date
 - `GET /todos?from=YYYY-MM-DD&to=YYYY-MM-DD` — todos in a date range
+- `GET /todos?backlog=true` — todos with no date set (the "Someday" pool)
 - `GET /todos` — all todos for the user
 - `GET /todos/:id` — single todo
-- `POST /todos` — create. Body: `{ description, date, color?, urgency?, status? }`
+- `POST /todos` — create. Body: `{ description, date?, color?, urgency?, status? }`
+  - `date` is optional — omit or set to `null` to add to the Someday backlog (no date)
   - `color` is optional — a random color is assigned if omitted
   - `urgency` defaults to `low` (`low` | `moderate` | `high`)
   - `status` defaults to `not_started` (`not_started` | `in_progress` | `done`)
-- `PATCH /todos/:id` — update any of the above fields
+- `PATCH /todos/:id` — update any of the above fields. Set `date: null` to move a todo back to the backlog.
 - `DELETE /todos/:id` — delete a todo
-- `GET /todos/calendar/:year/:month` — returns `{ summary: { "YYYY-MM-DD": [{ color, status }] } }` for monthly calendar dots
+- `GET /todos/calendar/:year/:month` — returns `{ summary: { "YYYY-MM-DD": [{ color, status }] } }` for monthly calendar dots (backlog todos are not included)
 
 ## Deploying with Coolify (Nixpacks)
 
