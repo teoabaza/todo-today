@@ -197,6 +197,7 @@ export const getCalendarSummary = async (req: AuthRequest, res: Response, next: 
     const summary: Record<string, { color: string; status: string }[]> = {};
     for (const todo of todos) {
       const key = formatDate(todo.date);
+      if (!key) continue; // defensive: range-filtered query should never return null dates
       if (!summary[key]) summary[key] = [];
       summary[key].push({ color: todo.color, status: todo.status });
     }
