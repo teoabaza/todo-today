@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,12 +20,23 @@ import { useAuth } from '../context/AuthContext';
 import { ApiError } from '../api/client';
 
 export const HomeScreen = ({ navigation }: any) => {
-  const { user } = useAuth();
+  const { user, staleMoved, clearStaleMoved } = useAuth();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const today = getTodayString();
+
+  // Show stale-moved notification once, as soon as HomeScreen mounts and count > 0
+  useEffect(() => {
+    if (staleMoved > 0) {
+      Alert.alert(
+        'Heads up!',
+        `${staleMoved} incomplete ${staleMoved === 1 ? 'todo was' : 'todos were'} not completed, so ${staleMoved === 1 ? 'it has' : 'they have'} been moved to your Someday list.`,
+        [{ text: 'Got it', onPress: clearStaleMoved }]
+      );
+    }
+  }, [staleMoved]);
 
   const loadTodos = useCallback(async () => {
     try {

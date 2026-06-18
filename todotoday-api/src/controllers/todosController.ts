@@ -207,3 +207,35 @@ export const getCalendarSummary = async (req: AuthRequest, res: Response, next: 
     next(err);
   }
 };
+
+// POST /todos/move-stale
+// Body: { today: "YYYY-MM-DD" } — the user's local today date.
+// Finds all incomplete todos with a date strictly before today,
+// sets their date to null (moves them to the Someday backlog),
+// and returns the count of moved todos.
+export const moveStale = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.userId;
+    const { today } = req.body;
+
+    const todayParsed = dateStringSchema.safeParse(today);
+    if (!todayParsed.success) {
+      return res.status(400).json({ error: 'today must be a valid YYYY-MM-DD date string' });
+    }
+
+    const todayUtc = toUtcDate(todayParsed.data);
+
+    const result = await prisma.todo.updateMany({
+      where: {
+        userId,
+        date: { lt: todayUtc },
+        status: { not: 'done' },
+      },
+      data: { date: null },
+    });
+
+    return res.json({ moved: result.count });
+  } catch (err) {
+    next(err);
+  }
+};

@@ -7,6 +7,7 @@ import {
   updateTodo,
   deleteTodo,
   getCalendarSummary,
+  moveStale,
 } from '../controllers/todosController';
 
 const router = Router();
@@ -14,6 +15,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.get('/calendar/:year/:month', getCalendarSummary);
+router.post('/move-stale', moveStale);
 router.get('/', getTodos);
 router.get('/:id', getTodoById);
 router.post('/', createTodo);

@@ -68,3 +68,10 @@ export const getCalendarSummary = (year: number, month: number) => {
     `/todos/calendar/${year}/${month}`
   );
 };
+
+export const moveStale = (today: string) => {
+  return apiRequest<{ moved: number }>('/todos/move-stale', {
+    method: 'POST',
+    body: { today },
+  });
+};
